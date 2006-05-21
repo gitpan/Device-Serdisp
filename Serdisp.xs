@@ -26,7 +26,7 @@ typedef struct {
 Serdisp*
 new_serdisp(char *connection, char *display)
 {
-    Serdisp *serdisp	= malloc(sizeof(Serdisp));
+    Serdisp *serdisp		= malloc(sizeof(Serdisp));
     serdisp->connection	= savepv(connection);
     serdisp->display		= savepv(display);
     serdisp->invers		= 0;
@@ -51,6 +51,13 @@ init(Serdisp *serdisp)
 		SDCONN_close(serdisp->sdcd);
 		Perl_croak(aTHX_ "Error opening display %s, additional info: %s", serdisp->display, sd_geterrormsg());
 	}
+
+	/* turning on backlight */
+	serdisp_setoption(serdisp->dd, "BACKLIGHT", SD_OPTION_YES);
+
+	/* clearing the display */
+	serdisp_clear(serdisp->dd);
+
 	return 1;
 }
 
@@ -66,33 +73,6 @@ height(Serdisp *serdisp)
 	return serdisp_getheight(serdisp->dd);
 }
 
-int
-draw(Serdisp *serdisp)
-{
-	/* turning on backlight */
-	serdisp_setoption(serdisp->dd, "BACKLIGHT", SD_OPTION_YES);
-
-	/* clearing the display */
-	serdisp_clear(serdisp->dd);
-
-	int i;
-
-	/* draw a border (only internal display buffer is affected!!) */
-	for (i = 0; i < serdisp_getwidth(serdisp->dd); i++) {
-		serdisp_setcolour(serdisp->dd, i, 0, SD_COL_BLACK);
-		serdisp_setcolour(serdisp->dd, i, serdisp_getheight(serdisp->dd)-1, SD_COL_BLACK);
-	}
-	for (i = 1; i < serdisp_getheight(serdisp->dd)-1; i++) {
-		serdisp_setcolour(serdisp->dd, 0, i, SD_COL_BLACK);
-		serdisp_setcolour(serdisp->dd, serdisp_getwidth(serdisp->dd)-1, i, SD_COL_BLACK);
-	}
-
-	/* commit changes -> update the display using the internal display buffer */
-	serdisp_update(serdisp->dd);
-
-	return 1;
-}
-
 #define min(a,b) ((a)<(b))?(a):(b)
 #define GET_COLOR_VALUE(d)        ((d)->invers ? SD_COL_WHITE : SD_COL_BLACK)
 #define GET_COLOR_VALUE_INVERS(d) ((d)->invers ? SD_COL_BLACK : SD_COL_WHITE)
@@ -100,8 +80,6 @@ draw(Serdisp *serdisp)
 void
 copyGD(Serdisp *serdisp, gdImagePtr image)
 {
-	int i,j;
-
 	int max_x = min(gdImageSX(image), serdisp_getwidth(serdisp->dd));
 	int max_y = min(gdImageSY(image), serdisp_getheight(serdisp->dd));
 
@@ -111,14 +89,20 @@ copyGD(Serdisp *serdisp, gdImagePtr image)
 	{
 		for (x = 0; x < max_x; x++)
 		{
-			int c = gdImageGetPixel(image, x, y);
+			int color = gdImageGetPixel(image, x, y);
+
+			//	set the pixel in the display if the color is non black
+			int set_pixel_in_display =
+					gdImageRed	(image, color)
+				||	gdImageGreen(image, color)
+				||	gdImageBlue	(image, color);
 
 	      serdisp_setcolour(
 	       	serdisp->dd,
 	       	x, y,
-	       	c
-	       	?	GET_COLOR_VALUE(serdisp)
-	       	:	GET_COLOR_VALUE_INVERS(serdisp)
+	       	set_pixel_in_display
+	       		?	GET_COLOR_VALUE(serdisp)
+	 	      	:	GET_COLOR_VALUE_INVERS(serdisp)
 	       );
 		}
 	}
@@ -168,10 +152,6 @@ width (serdisp)
 int
 height (serdisp)
     Serdisp*   serdisp
-
-int
-draw (serdisp)
-	Serdisp*   serdisp
 
 void
 copyGD(serdisp, image)

@@ -6,10 +6,10 @@ use warnings;
 
 use Test::More tests => 4;
 
-use_ok('Serdisp');
+use_ok('Device::Serdisp');
 use_ok('GD');
 
-my $d = Serdisp->new('USB:7c0/1501', 'ctinclud');
+my $d = Device::Serdisp->new('USB:7c0/1501', 'ctinclud');
 $d->init();
 ok($d->width() eq '128');
 ok($d->height() eq '64');

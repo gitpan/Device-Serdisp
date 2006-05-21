@@ -25,7 +25,7 @@ our @EXPORT = qw(
 
 );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 require XSLoader;
 XSLoader::load('Device::Serdisp', $VERSION);
@@ -68,7 +68,7 @@ This library is a quick interface to serdisplib.
 =item C<$d = Device::Serdisp-E<gt>new(connection,displaytype)>
 
 This will open the serdisp library for you. The first string
-is some kind of connector that describes the kind of interface
+is connector string that describes the kind of interface
 your are using to talk to your display:
 
 Examples:
@@ -120,7 +120,9 @@ None by default.
 
 =head1 SEE ALSO
 
-GD
+GD - http://www.boutell.com/gd/
+GD - perldoc GD
+Serdisplib - http://serdisplib.sourceforge.net/
 
 =head1 AUTHOR
 

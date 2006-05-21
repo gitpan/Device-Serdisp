@@ -1,11 +1,15 @@
 Revision history for Perl extension Device::Serdisp.
 
+0.04  Sun May 21 21:22:22 2006
+   - messup: up the sources
+	- changed: all non-black pixels will be set in the display
+
 0.03  Fri May 19 14:29:17 2006
 	- renamed: to Device::Serdisp
 
 0.02  Wed May 17 14:29:17 2006
 	- changed: all non-black pixels will be set in the display
-   - added: docs
+	- added: docs
 
 0.01  Wed Apr 19 19:54:17 2006
 	- original version; created by h2xs 1.23 with options
