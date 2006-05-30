@@ -77,7 +77,7 @@ height(Serdisp *serdisp)
 #define GET_COLOR_VALUE(d)        ((d)->invers ? SD_COL_WHITE : SD_COL_BLACK)
 #define GET_COLOR_VALUE_INVERS(d) ((d)->invers ? SD_COL_BLACK : SD_COL_WHITE)
 
-void
+int
 copyGD(Serdisp *serdisp, gdImagePtr image)
 {
 	int max_x = min(gdImageSX(image), serdisp_getwidth(serdisp->dd));
@@ -107,6 +107,8 @@ copyGD(Serdisp *serdisp, gdImagePtr image)
 		}
 	}
 	serdisp_update(serdisp->dd);
+	
+	return 1;
 }
 
 void
@@ -119,6 +121,8 @@ int
 update(Serdisp *serdisp)
 {
 	serdisp_update(serdisp->dd);
+	
+	return 1;
 }
 
 void
@@ -153,7 +157,7 @@ int
 height (serdisp)
     Serdisp*   serdisp
 
-void
+int
 copyGD(serdisp, image)
 	Serdisp*		serdisp
 	gdImagePtr		image

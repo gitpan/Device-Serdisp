@@ -4,15 +4,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use_ok('Device::Serdisp');
 use_ok('GD');
 
 my $d = Device::Serdisp->new('USB:7c0/1501', 'ctinclud');
 $d->init();
-ok($d->width() eq '128');
-ok($d->height() eq '64');
+ok($d->width() > 0, 'Checking width > 0');
+ok($d->height() > 0, 'Checking height > 0');
 
 $d->clear();
 
@@ -22,7 +22,7 @@ my $white = $image->colorAllocate(255,255,255);
 
 $image->transparent($black);
 $image->arc(10,10,10,10,0,270, $white);
-$d->copyGD($image);
+ok($d->copyGD($image), 'Copying GD image to display');
 
 sleep(5);
 

@@ -1,5 +1,9 @@
 Revision history for Perl extension Device::Serdisp.
 
+0.05  Thu May 30 23:34:34 2006
+   - 'use 5.006001' instead of 'use 5.008007'
+	- added tests
+
 0.04  Sun May 21 21:22:22 2006
    - messup: up the sources
 	- changed: all non-black pixels will be set in the display
