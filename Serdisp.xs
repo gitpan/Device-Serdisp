@@ -20,15 +20,17 @@ typedef struct {
 	int					invers;
 	char				*	connection;
 	char				*	display;
+	char				*	options;
 
 } Serdisp;
 
 Serdisp*
-new_serdisp(char *connection, char *display)
+new_serdisp(char *connection, char *display, char *options)
 {
     Serdisp *serdisp		= malloc(sizeof(Serdisp));
-    serdisp->connection	= savepv(connection);
+    serdisp->connection		= savepv(connection);
     serdisp->display		= savepv(display);
+    serdisp->options		= savepv(options);
     serdisp->invers		= 0;
     return serdisp;
 }
@@ -44,7 +46,7 @@ init(Serdisp *serdisp)
 	}
 
 	/* opening and initialising the display */
-	serdisp->dd = serdisp_init(serdisp->sdcd, serdisp->display, "");
+	serdisp->dd = serdisp_init(serdisp->sdcd, serdisp->display, serdisp->options);
 
 	if (!serdisp->dd)
 	{
@@ -133,15 +135,31 @@ delete_display(Serdisp *serdisp) {
 	free(serdisp);
 }
 
+void
+set_option(Serdisp *serdisp, char *option, long value) {
+
+	/* change option */
+	serdisp_setoption(serdisp->dd,savepv(option),value);
+}
+
+long
+get_option(Serdisp *serdisp, char *option) {
+
+	/* get option */
+	int temp = 0;
+	return serdisp_getoption(serdisp->dd,savepv(option),&temp);
+}
+
 MODULE = Device::Serdisp		PACKAGE = Device::Serdisp
 
 Serdisp *
-new (CLASS, connection, display)
+new (CLASS, connection, display, options="")
 		char *CLASS
 		char *connection
 		char *display
+		char *options
 	CODE:
-		RETVAL = new_serdisp(connection, display);
+		RETVAL = new_serdisp(connection, display, options);
 	OUTPUT:
 		RETVAL
 
@@ -175,3 +193,14 @@ DESTROY(serdisp)
     Serdisp *serdisp
   CODE:
     delete_display(serdisp); /* deallocate that object */
+
+void
+set_option(serdisp,option,value)
+    Serdisp*   serdisp
+    char*      option
+    long      value
+
+long
+get_option(serdisp,option)
+    Serdisp*   serdisp
+    char*      option

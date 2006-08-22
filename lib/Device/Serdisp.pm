@@ -25,7 +25,7 @@ our @EXPORT = qw(
 
 );
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 require XSLoader;
 XSLoader::load('Device::Serdisp', $VERSION);
@@ -114,15 +114,28 @@ If you GD area is lesser than your display the rest of the display area will be 
 Will clear the internal buffer of the serdisp library and force an update
 of the display.
 
+=item C<$d-E<gt>set_option(OPTION, VALUE)>
+
+Will set an option for the display. Valid values for OPTION
+depends on the type of your display and may vary.
+
+Example:
+
+   $d->set_option("INVERT","1");
+
+=item C<$d-E<gt>get_option(OPTION)>
+
+This will return the current value of the display.
+
 =head2 EXPORT
 
 None by default.
 
 =head1 SEE ALSO
 
-GD - http://www.boutell.com/gd/
-GD - perldoc GD
-Serdisplib - http://serdisplib.sourceforge.net/
+   GD - http://www.boutell.com/gd/
+   GD - perldoc GD
+   Serdisplib - http://serdisplib.sourceforge.net/
 
 =head1 AUTHOR
 

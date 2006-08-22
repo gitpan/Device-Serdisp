@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 7;
 
 use_ok('Device::Serdisp');
 use_ok('GD');
@@ -26,6 +26,13 @@ ok($d->copyGD($image), 'Copying GD image to display');
 
 sleep(5);
 
-undef $d;
+$d->set_option("INVERT","1");
+ok($d->get_option("INVERT"), "Invert display");
+sleep(2);
+$d->set_option("INVERT","0");
+ok(!$d->get_option("INVERT"), "Re-invert display");
 
+sleep(5);
+
+undef $d;
 
